@@ -1,41 +1,52 @@
-from collections import OrderedDict
 import words
 import Gallery
 
+
 def hangman():
     word = words.get_words()
-    placeHolder = "_ " * len(word)
+    placeHolder = "_" * len(word)
+    hidden_word = list(placeHolder)
+
     bodyParts = 10
-    rightGuess = 0
-    guessedLetters = []
+    rightGuess = []
+    badGuess = []
 
     while True:
-        print("The word you are looking for is: " + str(placeHolder))
+        print("The word you are looking for is: {}".format(" ".join(hidden_word)))
         print("You have " + str(bodyParts) + " guesses left.")
         guess = input("Guess a letter: ").lower()
-        # right = "no"
+        if guess in rightGuess or guess in badGuess:
+            print("You have already guessed that letter!")
+            continue
+        right = "no"
+        counter = 0
         for letter in word:
             if letter == guess:
-                counter = word.index(letter)
-                placeHolder[counter] = guess
+                right = "yes"
+                for position in hidden_word:
+                    hidden_word[counter] = letter
+                    rightGuess += guess
+                    break
+            counter += 1
 
-        # if right == "no":
-        #     bodyParts -= 1
-        #     for guessed in guessedLetters:
-        #         if guess == guessed:
-        #             print("You have already guessed that letter.")
-        #             break
-        #         else:
-        #             guessedLetters += guess
-        #             break
 
-        if rightGuess == len(word):
+        if right == "no":
+            bodyParts -= 1
+            for guessed in badGuess:
+                if guess == guessed:
+                    print("You have already guessed that letter.")
+                    break
+                else:
+                    badGuess += guess
+                    break
+
+        if len(rightGuess) == len(word):
             print("YAAY! You guessed right! The word was {}.".format(word))
             play_again()
             break
 
         elif bodyParts == 0:
-            print("The man was hung by these letters {}. Game over ;(".format(",".join(guessedLetters)))
+            print("The man was hung by these letters {}. Game over ;(".format(",".join(badGuess)))
             play_again()
             break
 

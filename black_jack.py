@@ -1,13 +1,13 @@
-from random import shuffle
 import Gallery
+from random import shuffle
+import play21
 
 def play_again():
     answer = input("Would you like to play again? ").lower()
     if answer == 'yes':
-        blackJack()
+        play21.play_black_jack()
     elif answer == 'no':
         Gallery.gallery()
-
 
 def deck():
     deck = []
@@ -15,24 +15,25 @@ def deck():
         for rank in ["A", "2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K"]:
             deck.append(suit+rank)
     shuffle(deck)
-
     return deck
 
 def pointCount(myCards):
     myCount = 0
     aceCount = 0
-
+    print(myCards)
     for i in myCards:
-        if(i[1] == 'J' or i[1] == 'Q' or i[1] == "K" or i[1] == "T"):
+        if i[1] == 'J' or i[1] == 'Q' or i[1] == "K" or i[1] == "T":
             myCount += 10
-        elif(i[1] != "A"):
+        elif i[1] != "A":
             myCount += int(i[1])
         else:
             aceCount += 1
-    if(aceCount == 1 and myCount >= 10):
-        myCount += 11
-    elif(aceCount != 0):
+    if aceCount == 1 and myCount >= 10:
         myCount += 1
+    elif aceCount >= 2 and myCount > 21:
+        myCount -= 11
+    elif aceCount != 0:
+        myCount += 11
 
     return myCount
 
@@ -44,10 +45,10 @@ def createPlayingHands(myDeck):
     playerHand.append(myDeck.pop())
     playerHand.append(myDeck.pop())
 
-    while(pointCount(dealerHand) <= 16):
+    while pointCount(dealerHand) <= 16:
         dealerHand.append(myDeck.pop())
 
-    return(dealerHand, playerHand)
+    return dealerHand, playerHand
 
 
 def play_BJ(dealer,player,myDeck):
@@ -56,47 +57,41 @@ def play_BJ(dealer,player,myDeck):
         playerCount = pointCount(player)
 
         print("Dealer has: ", dealer[0])
-        print("Player1, you have: ", ' '.join(player))
+        print("You have: {} \n".format(' '.join(player)))
 
-        if(playerCount == 21):
-            print("Black Jack! Player Wins!")
+        if playerCount == 21:
+            print("Black Jack! You Win!")
             play_again()
             break
-        elif(dealerCount == 21):
+        elif dealerCount == 21:
             print("Dealer Wins With 21!")
             play_again()
             break
-        elif(playerCount > 21):
-            print("Player BUSTS with ", str(playerCount), " points. Dealer wins!")
+        elif playerCount > 21:
+            print("Player BUSTS with {} points. Dealer wins!".format(playerCount))
             play_again()
             break
-        elif(dealerCount > 21):
-            print("Dealer BUSTS with ", str(dealerCount), " points. Player wins!")
+        elif dealerCount > 21:
+            print("Dealer BUSTS with {} points. You win!".format(dealerCount))
             play_again()
             break
 
-        print(playerCount,dealerCount)
         game = input("H: Hit me or S: Stand").upper()
-        if(game == "H"):
+        if game == "H":
             player.append(myDeck.pop())
-        elif(game == "S"):
-            if(playerCount > dealerCount):
-                print("Player wins with ", str(playerCount), " points")
-                print("Dealer has: ", str(' '.join(dealer)), " and ", str(dealerCount), " points.")
+        elif game == "S":
+            if playerCount > dealerCount:
+                print("Player wins with {} points.".format(playerCount))
+                print("Dealer has: {} points with {}.".format(dealerCount,' '.join(dealer)))
+                play_again()
+                break
+            elif playerCount == dealerCount:
+                print("Dealer wins in a draw!")
                 play_again()
                 break
             else:
-                print("You busted with ", str(playerCount), '. Your cards : ',str(' '.join(player)) )
+                print("You had {} with {}.".format(playerCount,' '.join(player)))
                 print("Dealer wins!")
-                print("Dealer has: ", str(' '.join(dealer)), " and ", str(dealerCount), " points.")
+                print("Dealer has: {} points with {}".format(dealerCount,' '.join(dealer)))
                 play_again()
                 break
-
-
-def blackJack():
-    myDeck = deck()
-    createPlayingHands(myDeck)
-    hands = createPlayingHands(myDeck)
-    dealer = hands[0]
-    player = hands[1]
-    play_BJ(dealer, player, myDeck)

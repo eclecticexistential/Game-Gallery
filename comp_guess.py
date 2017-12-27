@@ -22,10 +22,10 @@ def comp_guess_game():
                 play_again()
                 break
             else:
-                print("The computer guessed your secret number {} with only {} guesses!".format(hidden_number,len(guesses)-1))
+                print("The computer guessed your secret number {} in {} attempts.".format(hidden_number,len(guesses)))
                 play_again()
                 break
-        elif len(guesses) <= 4:
+        elif len(guesses) <= 3:
             if computer_guess < hidden_number:
                 print("The computer's guess is {}. Let's tell them it's too low.".format(computer_guess))
                 x = computer_guess+1

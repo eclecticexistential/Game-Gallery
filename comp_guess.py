@@ -1,12 +1,11 @@
 import random
-import Gallery
 
 def play_again():
     answer = input("Would you like to play again?").lower()
     if answer == 'yes':
         comp_guess_game()
     elif answer == 'no':
-        Gallery.gallery()
+        import Gallery
 
 
 def comp_guess_game():

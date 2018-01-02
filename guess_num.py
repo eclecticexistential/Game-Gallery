@@ -1,5 +1,4 @@
 import random
-import Gallery
 
 counter = 0
 name = ""
@@ -9,7 +8,7 @@ def play_again(name,counter):
     if answer == 'yes':
         guess()
     elif answer == 'no':
-        Gallery.gallery()
+        import Gallery
 
 def guess():
     global counter

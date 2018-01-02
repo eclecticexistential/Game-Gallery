@@ -1,5 +1,4 @@
 import words
-import Gallery
 
 
 def hangman():
@@ -56,4 +55,4 @@ def play_again():
     if answer == 'yes':
         hangman()
     elif answer == 'no':
-        Gallery.gallery()
+        import Gallery
